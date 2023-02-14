@@ -9,10 +9,9 @@ include_directories(${CMAKE_CURRENT_SOURCE_DIR}
     ./imgui/backends
 )
 
-link_directories(
-    ${catkin_LIBRARY_DIRS}
-)
-
+# link_directories(
+# ${catkin_LIBRARY_DIRS}
+# )
 link_libraries("-lpthread -lm -lGL -lglfw -lrt -ldl")
 
 file(GLOB_RECURSE PROJECT_SRC "src/*.cpp")
@@ -28,6 +27,7 @@ add_executable(${PROJECT_NAME}_node
     imgui/backends/imgui_impl_opengl2.cpp
     imgui/implot.cpp
     imgui/implot_items.cpp
+    imgui/implot_demo.cpp
 )
 
 target_link_libraries(${PROJECT_NAME}_node
