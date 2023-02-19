@@ -11,6 +11,8 @@
 #include <imgui/implot.h>
 #include <imgui/implot_internal.h>
 
+#include "imgui_config.h"
+
 // [Win32] Our example includes a copy of glfw3.lib pre-compiled with VS2010 to maximize ease of testing and compatibility with old VS compilers.
 // To link with VS2010-era libraries, VS2015+ requires linking with legacy_stdio_definitions.lib, which we do using this pragma.
 // Your own project should not be affected, as you are likely to link with a newer binary of GLFW that is adequate for your version of Visual Studio.
@@ -28,20 +30,29 @@ int main(int args, char **argv)
     glfwSetErrorCallback(glfw_error_callback);
     if (!glfwInit())
         return 1;
-    GLFWwindow *window = glfwCreateWindow(1280, 720, "Dear ImGui GLFW+OpenGL2 example", NULL, NULL);
+    GLFWwindow *window = glfwCreateWindow(1280, 720, "墨派机器人调试工具", NULL, NULL);
+    if (window == NULL)
+    {
+        return 1;
+    }
+    glfwMakeContextCurrent(window);
     glfwSwapInterval(1); // Enable vsync
 
     // Setup Dear ImGui context
     IMGUI_CHECKVERSION();
     ImGui::CreateContext();
+    ImPlot::CreateContext();
+
     ImGuiIO &io = ImGui::GetIO();
+    // 加入简体中文支持
+    io.Fonts->AddFontFromFileTTF("../fonts/simhei.ttf", 16.0f, NULL, io.Fonts->GetGlyphRangesChineseSimplifiedCommon());
     (void)io;
     // io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;     // Enable Keyboard Controls
     // io.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad;      // Enable Gamepad Controls
 
     // Setup Dear ImGui style
-    ImGui::StyleColorsDark();
-    // ImGui::StyleColorsLight();
+    // ImGui::StyleColorsDark();
+    ImGui::StyleColorsLight();
 
     // Setup Platform/Renderer backends
     ImGui_ImplGlfw_InitForOpenGL(window, true);
@@ -67,6 +78,9 @@ int main(int args, char **argv)
         ImGui_ImplGlfw_NewFrame();
         ImGui::NewFrame();
 
+        MoproboGui::ShowMoproboWindow();
+
+#if 0
         // 1. Show the big demo window (Most of the sample code is in ImGui::ShowDemoWindow()! You can browse its code to learn more about Dear ImGui!).
         if (show_demo_window)
             ImGui::ShowDemoWindow(&show_demo_window);
@@ -76,7 +90,7 @@ int main(int args, char **argv)
             static float f = 0.0f;
             static int counter = 0;
 
-            ImGui::Begin("Hello, world!"); // Create a window called "Hello, world!" and append into it.
+            ImGui::Begin("你好啊!"); // Create a window called "Hello, world!" and append into it.
 
             ImGui::Text("This is some useful text.");          // Display some text (you can use a format strings too)
             ImGui::Checkbox("Demo Window", &show_demo_window); // Edit bools storing our window open/close state
@@ -103,6 +117,7 @@ int main(int args, char **argv)
                 show_another_window = false;
             ImGui::End();
         }
+#endif
 
         // Rendering
         ImGui::Render();
