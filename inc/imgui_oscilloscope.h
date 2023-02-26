@@ -1,60 +1,21 @@
 #pragma once
 
-#include <imgui/imgui.h>
-#include <imgui/implot.h>
-#include <imgui/implot_internal.h>
-
 #include <memory>
 #include <string>
+#include <unordered_map>
 #include <vector>
+
+#include "data_comm.h"
 
 #ifndef MOPROBO_API
 #define MOPROBO_API extern
 #endif
 
 namespace MoproboGui {
-// utility structure for realtime plot
-struct ScrollingBuffer {
-    int MaxSize;
-    int Offset;
-    ImVector<ImVec2> Data;
-    ScrollingBuffer(int max_size = 2000) {
-        MaxSize = max_size;
-        Offset = 0;
-        Data.reserve(MaxSize);
-    }
-    void AddPoint(float x, float y) {
-        if (Data.size() < MaxSize)
-            Data.push_back(ImVec2(x, y));
-        else {
-            Data[Offset] = ImVec2(x, y);
-            Offset = (Offset + 1) % MaxSize;
-        }
-    }
-    void Erase() {
-        if (Data.size() > 0) {
-            Data.shrink(0);
-            Offset = 0;
-        }
-    }
-};
 
-// utility structure for realtime plot
-struct RollingBuffer {
-    float Span;
-    ImVector<ImVec2> Data;
-    RollingBuffer() {
-        Span = 10.0f;
-        Data.reserve(20000);
-    }
-    void AddPoint(float x, float y) {
-        float xmod = fmodf(x, Span);
-        if (!Data.empty() && xmod < Data.back().x) Data.shrink(0);
-        Data.push_back(ImVec2(xmod, y));
-    }
-};
+class OscilloscopeWindow;
+class OscilloscopeBuffer;
 
-class OscilloscopeBase;
 class OscilloscopeFactory {
     OscilloscopeFactory() {}
 
@@ -63,43 +24,75 @@ public:
         static OscilloscopeFactory instance;
         return instance;
     }
-    ~OscilloscopeFactory() {}
+    ~OscilloscopeFactory() = default;
 
-    void ShowMoproboWindow();
+    void showMoproboWindow();
+
+    std::shared_ptr<OscilloscopeWindow> createScopes(
+        const std::string& fold, const std::string& plot,
+        ImPlotAxisFlags flag = ImPlotAxisFlags_None, float history = 10.f,
+        float max = 60.f);
 
 private:
-    std::vector<std::unique_ptr<OscilloscopeBase>> m_scopes;
+    std::unordered_map<std::string, std::shared_ptr<OscilloscopeWindow>>
+        m_scopes;
 };
 
-class OscilloscopeBase {
+class OscilloscopeWindow {
 public:
-    OscilloscopeBase() {}
-    virtual ~OscilloscopeBase() = 0;
-
-    virtual void setScopeConfig(const std::string& fold,
+    OscilloscopeWindow() = delete;
+    explicit OscilloscopeWindow(const std::string& fold,
                                 const std::string& plot, ImPlotAxisFlags flag,
-                                float history, float max) = 0;
+                                float history, float max)
+        : m_foldName(fold),
+          m_plotName(plot),
+          m_flag(flag),
+          m_history(history),
+          m_maxTime(max) {}
+    ~OscilloscopeWindow() = default;
+
+    void setScopeConfig(const std::string& fold, const std::string& plot,
+                        ImPlotAxisFlags flag, float history, float max);
+
+    std::shared_ptr<OscilloscopeBuffer> createPlot(const std::string& plot);
+
+    void showOscilloscopeWindow();
 
 private:
-    std::string m_foldName;
-    std::string m_plotName;
+    std::string m_foldName{""};
+    std::string m_plotName{""};
     ImPlotAxisFlags m_flag;
     float m_history{0};
     float m_maxTime{0};
+
+    std::unordered_map<std::string, std::shared_ptr<OscilloscopeBuffer>>
+        m_buffers;
 };
 
-class MoproboOscilloscope : public OscilloscopeBase {
-    MoproboOscilloscope(const MoproboOscilloscope&) = delete;
-    MoproboOscilloscope& operator=(const MoproboOscilloscope&) = delete;
-
+class OscilloscopeBuffer {
 public:
-    MoproboOscilloscope() {}
-    ~MoproboOscilloscope() {}
+    OscilloscopeBuffer() = default;
+    explicit OscilloscopeBuffer(const std::string& id) : m_plotId(id) {}
+    ~OscilloscopeBuffer() = default;
 
-    void setPlotLine(const RollingBuffer& buffer) {}
+    std::string id() const;
+
+    RollingBuffer getBuffer() const;
+
+    bool addPoint(float number, float time);
+
+    bool reSpan(float span);
+
+    bool clear();
 
 private:
-    std::vector<RollingBuffer> m_buffers;
+    std::string m_plotId{""};
+
+    double m_time{0};
+
+    RollingBuffer m_buffer;
 };
+
+// void createPlotLine(const std::string& line_id, float* x, float* y) {}
 
 };  // namespace MoproboGui
