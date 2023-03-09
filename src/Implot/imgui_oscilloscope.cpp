@@ -1,4 +1,4 @@
-#include "imgui_oscilloscope.h"
+#include "Implot/imgui_oscilloscope.h"
 
 #include "iostream"
 

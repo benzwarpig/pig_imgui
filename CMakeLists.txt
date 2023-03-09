@@ -7,6 +7,7 @@ include_directories(${CMAKE_CURRENT_SOURCE_DIR}
     ./inc
     ./imgui
     ./imgui/backends
+    ./inc/Implot
 )
 
 # link_directories(

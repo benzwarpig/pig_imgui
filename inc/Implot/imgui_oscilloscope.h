@@ -1,3 +1,36 @@
+/**
+ * @file imgui_oscilloscope.h
+ * @author benzs_war_pig (benzwarpig@outlook.com)
+ * @brief
+ * 基于implot,实现软件示波器功能，可以生成任意窗口，每个窗口可以添加任意波形曲线。
+ *
+ * 用法如下：
+ *  auto scope = MoproboGui::OscilloscopeFactory::getInstance().createScopes(
+ *      "Moprobo软件示波器", "实时波形绘制");
+ *
+ *  auto plot1 = scope->createPlot("测试数据波形1");
+ *  auto plot2 = scope->createPlot("测试数据波形2");
+ *
+ *  std::future<void> scopeThread = std::async(std::launch::async, [&]() {
+ *      int num = 0;
+ *      double time = 0;
+ *      while (true) {
+ *          if (++num > 100) {
+ *              num -= 100;
+ *          }
+ *          plot1->addPoint(num, 0.02);
+ *          plot2->addPoint(100 - num, 0.02);
+ *          std::this_thread::sleep_for(std::chrono::milliseconds(20));
+ *      }
+ *  });
+ *
+ * @version 1.0
+ * @date 2023-03-10
+ *
+ * @copyright Copyright (c) 2023
+ *
+ */
+
 #pragma once
 
 #include <memory>
