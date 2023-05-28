@@ -14,7 +14,6 @@ public:
     }
 
     ~HistogramFactory() = default;
-
     void showHistogram() {
         static ImPlotHistogramFlags hist_flags = ImPlotHistogramFlags_Density;
         static int bins = 50;

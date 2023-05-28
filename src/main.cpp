@@ -13,6 +13,7 @@
 #include <imgui/implot.h>
 #include <imgui/implot_internal.h>
 
+#include "Implot/imgui_histogram.h"
 #include "Implot/imgui_oscilloscope.h"
 
 // [Win32] Our example includes a copy of glfw3.lib pre-compiled with VS2010 to
@@ -112,6 +113,7 @@ int main(int args, char **argv) {
         ImGui::NewFrame();
 
         MoproboGui::OscilloscopeFactory::getInstance().showMoproboWindow();
+        MoproboGui::HistogramFactory::getInstance().showHistogram();
 
         // Rendering
         ImGui::Render();
