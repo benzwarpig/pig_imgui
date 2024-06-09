@@ -49,8 +49,9 @@ int main(int args, char **argv) {
 
     ImGuiIO &io = ImGui::GetIO();
     // 加入简体中文支持
+    std::string lang = std::string(MY_MACRO) + "/fonts/simhei.ttf";
     io.Fonts->AddFontFromFileTTF(
-        "../fonts/simhei.ttf", 16.0f, NULL,
+        lang.c_str(), 16.0f, NULL,
         io.Fonts->GetGlyphRangesChineseSimplifiedCommon());
     (void)io;
     // io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;     // Enable
