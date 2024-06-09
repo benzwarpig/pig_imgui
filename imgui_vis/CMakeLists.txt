@@ -14,7 +14,7 @@ add_definitions(-DMY_MACRO="${CMAKE_CURRENT_SOURCE_DIR}")
 
 file(GLOB_RECURSE PROJECT_SRC "src/*.cpp")
 
-add_executable(${PROJECT_NAME}_node
+add_executable(${PROJECT_NAME}_imgui_node
   ${PROJECT_SRC}
   imgui/imgui.cpp
   imgui/imgui_demo.cpp
@@ -28,6 +28,6 @@ add_executable(${PROJECT_NAME}_node
   imgui/implot_demo.cpp
 )
 
-target_link_libraries(${PROJECT_NAME}_node
+target_link_libraries(${PROJECT_NAME}_imgui_node
   ${catkin_LIBRARIES}
 )
