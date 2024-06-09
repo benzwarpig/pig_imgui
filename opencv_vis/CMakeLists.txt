@@ -14,4 +14,10 @@ add_executable(${PROJECT_NAME}_opencv_node
 
 target_link_libraries(${PROJECT_NAME}_opencv_node
   ${catkin_LIBRARIES}
+  lib::zemb
+)
+
+target_include_directories(${PROJECT_NAME}_opencv_node
+  PUBLIC
+  ${CMAKE_CURRENT_SOURCE_DIR}/inc
 )
